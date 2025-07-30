@@ -12,6 +12,7 @@ interface AppContextType {
   setCategories: React.Dispatch<React.SetStateAction<Categoria[]>>;
   expenses: Despesa[];
   setExpenses: React.Dispatch<React.SetStateAction<Despesa[]>>;
+  logout: () => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -21,6 +22,7 @@ export const AppContext = createContext<AppContextType>({
   setCategories: () => {},
   expenses: [],
   setExpenses: () => {},
+  logout: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -34,18 +36,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     try {
       const savedUser = localStorage.getItem('user');
       setUser(savedUser ? JSON.parse(savedUser, (key, value) => {
-        if (key === 'data_de_aniversario') {
+        if (key === 'data_de_aniversario' && value) {
             return new Date(value);
         }
         return value;
-      }) : initialUser);
+      }) : null);
 
       const savedCategories = localStorage.getItem('categories');
       setCategories(savedCategories ? JSON.parse(savedCategories) : initialCategories);
 
       const savedExpenses = localStorage.getItem('expenses');
       setExpenses(savedExpenses ? JSON.parse(savedExpenses, (key, value) => {
-        if (key === 'data') {
+        if (key === 'data' && value) {
             return new Date(value);
         }
         return value;
@@ -61,6 +63,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isMounted && user !== null) {
       localStorage.setItem('user', JSON.stringify(user));
+    } else if (isMounted && user === null) {
+      localStorage.removeItem('user');
     }
   }, [user, isMounted]);
 
@@ -76,12 +80,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [expenses, isMounted]);
   
+  const logout = () => {
+    setUser(null);
+    setCategories(initialCategories);
+    setExpenses(initialExpenses);
+    localStorage.removeItem('user');
+    localStorage.removeItem('categories');
+    localStorage.removeItem('expenses');
+  };
+
   if (!isMounted) {
     return null; // or a loading spinner
   }
 
   return (
-    <AppContext.Provider value={{ user, setUser, categories, setCategories, expenses, setExpenses }}>
+    <AppContext.Provider value={{ user, setUser, categories, setCategories, expenses, setExpenses, logout }}>
       {children}
     </AppContext.Provider>
   );

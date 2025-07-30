@@ -31,15 +31,22 @@ import {
 import { useContext } from "react";
 import { AppContext } from "@/context/app-context";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { user } = useContext(AppContext);
+  const { user, logout } = useContext(AppContext);
+  const router = useRouter();
 
   const getInitials = (name?: string) => {
     if (!name) return "";
     const names = name.split(' ');
     const initials = names.map(n => n[0]).join('');
     return initials.toUpperCase().slice(0, 2);
+  }
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
   }
 
   return (
@@ -115,8 +122,8 @@ export default function Header() {
           </DropdownMenuItem>
           <DropdownMenuItem>Suporte</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link href="/login">Sair</Link>
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+            Sair
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
