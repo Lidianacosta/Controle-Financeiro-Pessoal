@@ -1,3 +1,4 @@
+
 "use client";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,8 @@ import { AddEditCategoryDialog } from '@/components/categories/add-category-dial
 import { categories as initialCategories } from '@/lib/mock-data';
 import type { Categoria } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
 
 export default function CategoriesPage() {
     const { toast } = useToast();
@@ -44,6 +47,18 @@ export default function CategoriesPage() {
         }
     }
 
+    const handleDeleteCategory = (categoryId: string) => {
+        const categoryToDelete = categories.find(c => c.id === categoryId);
+        if (categoryToDelete) {
+            setCategories(prev => prev.filter(c => c.id !== categoryId));
+            toast({
+                title: "Categoria Excluída!",
+                description: `A categoria "${categoryToDelete.nome}" foi excluída com sucesso.`,
+                variant: 'destructive',
+            });
+        }
+    };
+
     return (
         <>
             <Card>
@@ -62,7 +77,7 @@ export default function CategoriesPage() {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <CategoryTable categories={categories} onEdit={handleOpenDialog} />
+                    <CategoryTable categories={categories} onEdit={handleOpenDialog} onDelete={handleDeleteCategory} />
                 </CardContent>
             </Card>
             <AddEditCategoryDialog 

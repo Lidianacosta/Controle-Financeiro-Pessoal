@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import * as Lucide from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 type IconName = keyof typeof Lucide;
 
@@ -33,7 +34,7 @@ const Icon = ({ name, ...props }: { name?: string; [key: string]: any }) => {
 };
 
 
-export function CategoryTable({ categories, onEdit }: { categories: Categoria[], onEdit: (category: Categoria) => void }) {
+export function CategoryTable({ categories, onEdit, onDelete }: { categories: Categoria[], onEdit: (category: Categoria) => void, onDelete: (id: string) => void }) {
   return (
     <Table>
       <TableHeader>
@@ -57,19 +58,36 @@ export function CategoryTable({ categories, onEdit }: { categories: Categoria[],
             <TableCell className="font-medium">{category.nome}</TableCell>
             <TableCell>{category.descricao}</TableCell>
             <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button aria-haspopup="true" size="icon" variant="ghost">
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Menu de ações</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => onEdit(category)}>Editar</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <AlertDialog>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Menu de ações</span>
+                    </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => onEdit(category)}>Editar</DropdownMenuItem>
+                    <AlertDialogTrigger asChild>
+                        <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Essa ação não pode ser desfeita. Isso excluirá permanentemente a categoria e
+                        removerá seus dados de nossos servidores.
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDelete(category.id)}>Excluir</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </TableCell>
           </TableRow>
         ))}
