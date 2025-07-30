@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Despesa } from "@/lib/types";
 import {
   Table,
@@ -26,7 +27,28 @@ type ExpenseTableProps = {
   onDelete: (id: string) => void;
 };
 
+const ITEMS_PER_PAGE = 5;
+
 export default function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(expenses.length / ITEMS_PER_PAGE);
+  const paginatedExpenses = expenses.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(currentPage * ITEMS_PER_PAGE, expenses.length);
+
   return (
     <Card>
       <CardHeader>
@@ -50,7 +72,7 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTabl
             </TableRow>
           </TableHeader>
           <TableBody>
-            {expenses.map((expense) => (
+            {paginatedExpenses.map((expense) => (
               <TableRow key={expense.id}>
                 <TableCell className="font-medium">{expense.nome}</TableCell>
                 <TableCell className="hidden md:table-cell">{expense.category?.nome || 'N/A'}</TableCell>
@@ -105,8 +127,26 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTabl
         </Table>
       </CardContent>
       <CardFooter>
-        <div className="text-xs text-muted-foreground">
-          Mostrando <strong>1-{expenses.length > 10 ? 10 : expenses.length}</strong> de <strong>{expenses.length}</strong> despesas
+        <div className="text-xs text-muted-foreground flex-1">
+           Mostrando <strong>{startIndex}-{endIndex}</strong> de <strong>{expenses.length}</strong> despesas
+        </div>
+        <div className="flex items-center gap-2">
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+            >
+                Anterior
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages || totalPages === 0}
+            >
+                Próximo
+            </Button>
         </div>
       </CardFooter>
     </Card>
