@@ -179,7 +179,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                           <SelectGroup>
                            <SelectLabel className="text-primary">Sugeridas</SelectLabel>
                             {suggestedCategories.map((cat, i) => (
-                                <SelectItem key={`${cat}-${i}`} value={cat}>{cat}</SelectItem>
+                                <SelectItem key={`sug-${cat}-${i}`} value={cat}>{cat}</SelectItem>
                             ))}
                           </SelectGroup>
                       )}
