@@ -108,6 +108,7 @@ export default function DashboardPage() {
         onOpenChange={setIsSheetOpen}
         onSaveExpense={handleSaveExpense}
         expenseToEdit={expenseToEdit}
+        categories={categories}
       />
     </>
   );

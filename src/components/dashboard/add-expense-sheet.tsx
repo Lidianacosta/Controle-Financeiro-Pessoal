@@ -37,10 +37,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { suggestExpenseCategory } from "@/ai/flows/suggest-expense-category";
-import { categories } from "@/lib/mock-data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import type { Despesa } from "@/lib/types";
+import type { Despesa, Categoria } from "@/lib/types";
 
 const expenseSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -59,9 +58,10 @@ type AddExpenseSheetProps = {
     onOpenChange: (isOpen: boolean) => void;
     onSaveExpense: (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }, id?: string) => void;
     expenseToEdit?: Despesa | null;
+    categories: Categoria[];
 };
 
-export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit }: AddExpenseSheetProps) {
+export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit, categories }: AddExpenseSheetProps) {
   const { toast } = useToast();
   const [suggestedCategories, setSuggestedCategories] = useState<string[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
