@@ -1,9 +1,9 @@
 import type { Despesa, Categoria, User } from './types';
 
 export const categories: Categoria[] = [
-  { id: '1', name: 'Alimentação', icon: 'Utensils', descricao: 'Despesas com comida, restaurantes, etc.' },
+  { id: '1', name: 'Comida', icon: 'Utensils', descricao: 'Despesas com comida, restaurantes, etc.' },
   { id: '2', name: 'Transporte', icon: 'Bus', descricao: 'Despesas com transporte público, combustível, etc.' },
-  { id: '3', name: 'Moradia', icon: 'Home', descricao: 'Aluguel, contas de casa, etc.' },
+  { id: '3', name: 'Aluguel', icon: 'Home', descricao: 'Aluguel, contas de casa, etc.' },
   { id: '4', name: 'Lazer', icon: 'Film', descricao: 'Cinema, shows, etc.' },
   { id: '5', name: 'Saúde', icon: 'HeartPulse', descricao: 'Médicos, remédios, etc.' },
   { id: '6', name: 'Educação', icon: 'BookOpen', descricao: 'Cursos, livros, etc.' },
