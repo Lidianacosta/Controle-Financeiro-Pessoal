@@ -12,11 +12,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 
 type CategoriesPageProps = {
-    categories: Categoria[];
+    categories?: Categoria[];
     setCategories: React.Dispatch<React.SetStateAction<Categoria[]>>;
 }
 
-export default function CategoriesPage({ categories, setCategories }: CategoriesPageProps) {
+export default function CategoriesPage({ categories = [], setCategories }: CategoriesPageProps) {
     const { toast } = useToast();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [categoryToEdit, setCategoryToEdit] = useState<Categoria | null>(null);
