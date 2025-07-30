@@ -28,6 +28,9 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Categoria } from "@/lib/types";
 import { useEffect } from "react";
 import { IconPicker } from "../settings/icon-picker";
+import * as Lucide from 'lucide-react';
+
+const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object' && key !== 'createLucideIcon' && key !== 'icons');
 
 const categorySchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -126,6 +129,7 @@ export function AddEditCategoryDialog({ isOpen, onOpenChange, onSaveCategory, ca
                        <IconPicker 
                         value={field.value || "MoreHorizontal"} 
                         onChange={field.onChange} 
+                        iconList={iconList}
                        />
                     </FormControl>
                     <FormMessage />
