@@ -51,6 +51,7 @@ export default function SignupPage() {
       senha: "",
       renda_mensal: 0,
       numero_de_telefone: "",
+      data_de_aniversario: undefined,
     },
   });
 
@@ -88,7 +89,7 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-                <FormField
+                 <FormField
                   control={form.control}
                   name="cpf"
                   render={({ field }) => (
@@ -166,6 +167,9 @@ export default function SignupPage() {
                                 disabled={(date) =>
                                 date > new Date() || date < new Date("1900-01-01")
                                 }
+                                captionLayout="dropdown-buttons"
+                                fromYear={1900}
+                                toYear={new Date().getFullYear()}
                                 initialFocus
                             />
                             </PopoverContent>
