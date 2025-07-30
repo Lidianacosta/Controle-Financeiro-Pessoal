@@ -26,7 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { Categoria } from "@/lib/types";
 import { useEffect } from "react";
-import { IconPicker } from "./icon-picker";
+import { IconPicker } from "../settings/icon-picker";
 
 const categorySchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
