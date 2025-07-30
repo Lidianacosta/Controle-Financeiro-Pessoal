@@ -7,6 +7,7 @@ export type User = {
   data_de_aniversario?: Date;
   senha?: string;
   renda_mensal: number;
+  meta_de_economia?: number;
 };
 
 export type DespesaStatus = 'Paga' | 'A Pagar';

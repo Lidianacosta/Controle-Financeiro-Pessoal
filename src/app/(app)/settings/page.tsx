@@ -40,6 +40,7 @@ const profileSchema = z.object({
     numero_de_telefone: z.string().optional(),
     data_de_aniversario: z.date().optional(),
     renda_mensal: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
+    meta_de_economia: z.coerce.number().min(0, "A meta deve ser um valor positivo.").optional(),
 });
 
 export default function SettingsPage() {
@@ -55,6 +56,7 @@ export default function SettingsPage() {
             numero_de_telefone: "",
             data_de_aniversario: undefined,
             renda_mensal: 0,
+            meta_de_economia: 0,
         },
     });
 
@@ -232,6 +234,20 @@ export default function SettingsPage() {
                 )}
               />
             </div>
+
+            <FormField
+                control={form.control}
+                name="meta_de_economia"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Meta de Economia Mensal</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="R$" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
             
             <div className="flex justify-end">
                 <Button type="submit" variant="success">Salvar Alterações</Button>
@@ -242,4 +258,3 @@ export default function SettingsPage() {
     </Card>
   );
 }
-

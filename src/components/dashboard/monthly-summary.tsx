@@ -1,30 +1,32 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, CreditCard, Landmark, TrendingUp } from "lucide-react";
-import type { Despesa } from "@/lib/types";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { ChartTooltip, ChartTooltipContent, ChartContainer } from "@/components/ui/chart";
+import type { Despesa, User } from "@/lib/types";
+import { useContext } from "react";
+import { AppContext } from "@/context/app-context";
 
 type MonthlySummaryProps = {
   expenses: Despesa[];
 };
 
 export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
+  const { user } = useContext(AppContext);
   const totalExpenses = expenses.reduce((acc, expense) => acc + expense.valor, 0);
-  const fixedIncome = 5000; 
-  const balance = fixedIncome - totalExpenses;
+  const income = user?.renda_mensal || 0;
+  const savingsGoal = user?.meta_de_economia || 0;
+  const balance = income - totalExpenses;
+  const savings = income - totalExpenses;
+  const savingsPercentage = savingsGoal > 0 ? (savings / savingsGoal) * 100 : 0;
 
-  const expenseDataByCat = expenses.reduce((acc, expense) => {
-    const categoryName = expense.category?.nome || 'Outros';
-    if (!acc[categoryName]) {
-      acc[categoryName] = 0;
-    }
-    acc[categoryName] += expense.valor;
-    return acc;
-  }, {} as Record<string, number>);
 
-  const chartData = Object.entries(expenseDataByCat).map(([name, total]) => ({ name, total }));
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -35,13 +37,10 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {fixedIncome.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {formatCurrency(income)}
           </div>
           <p className="text-xs text-muted-foreground">
-            Baseado na sua renda fixa
+            Baseado na sua renda cadastrada
           </p>
         </CardContent>
       </Card>
@@ -52,10 +51,7 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-destructive">
-            {totalExpenses.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {formatCurrency(totalExpenses)}
           </div>
           <p className="text-xs text-muted-foreground">
             Total de despesas do mês
@@ -69,10 +65,7 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
         </CardHeader>
         <CardContent>
           <div className={`text-2xl font-bold ${balance < 0 ? 'text-destructive' : 'text-primary'}`}>
-            {balance.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {formatCurrency(balance)}
           </div>
           <p className="text-xs text-muted-foreground">Balanço do mês atual</p>
         </CardContent>
@@ -84,10 +77,10 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            R$ 1.500,00
+            {formatCurrency(savings)}
           </div>
           <p className="text-xs text-muted-foreground">
-            75% da sua meta de R$ 2.000,00
+             {savingsPercentage.toFixed(0)}% da sua meta de {formatCurrency(savingsGoal)}
           </p>
         </CardContent>
       </Card>
