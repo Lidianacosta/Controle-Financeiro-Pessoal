@@ -39,7 +39,7 @@ import { suggestExpenseCategory } from "@/ai/flows/suggest-expense-category";
 import { categories } from "@/lib/mock-data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import type { DespesaStatus } from "@/lib/types";
+import type { DespesaStatus, Despesa } from "@/lib/types";
 
 const expenseSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -48,6 +48,7 @@ const expenseSchema = z.object({
   data: z.date({ required_error: "A data é obrigatória." }),
   status: z.enum(["Paga", "A Pagar"], { required_error: "Selecione o status." }),
   category: z.string({ required_error: "Selecione uma categoria." }),
+  isFixed: z.boolean().optional(),
 });
 
 type ExpenseFormValues = z.infer<typeof expenseSchema>;
@@ -55,7 +56,7 @@ type ExpenseFormValues = z.infer<typeof expenseSchema>;
 type AddExpenseSheetProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onAddExpense: (expense: Omit<ExpenseFormValues, "category"> & { category: string, status: DespesaStatus }) => void;
+    onAddExpense: (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }) => void;
 };
 
 export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: AddExpenseSheetProps) {
@@ -65,8 +66,12 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
     defaultValues: {
+      nome: "",
+      valor: 0,
+      descricao: "",
       status: "A Pagar",
       data: new Date(),
+      isFixed: false,
     },
   });
 
@@ -106,7 +111,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
   };
 
   const onSubmit = (data: ExpenseFormValues) => {
-    onAddExpense(data);
+    onAddExpense(data as any);
     form.reset();
     setSuggestedCategories([]);
     onOpenChange(false);
