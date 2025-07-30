@@ -217,7 +217,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
                       )}
                       <SelectGroup>
                         <SelectLabel>Todas</SelectLabel>
-                        {categories.map((cat) => (
+                        {categories?.map((cat) => (
                           <SelectItem key={cat.id} value={cat.nome}>{cat.nome}</SelectItem>
                         ))}
                       </SelectGroup>
@@ -324,5 +324,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
     </Sheet>
   );
 }
+
+    
 
     
