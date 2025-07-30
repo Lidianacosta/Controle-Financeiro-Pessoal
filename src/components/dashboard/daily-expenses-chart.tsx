@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import type { Despesa } from '@/lib/types';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, getDate } from 'date-fns';
 
 const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -34,6 +34,7 @@ export default function DailyExpensesChart({ expenses }: { expenses: Despesa[] }
 
             return {
                 name: format(day, 'dd'),
+                fullDate: day,
                 total: total,
             };
         });
@@ -68,6 +69,7 @@ export default function DailyExpensesChart({ expenses }: { expenses: Despesa[] }
                                     tickMargin={10}
                                     axisLine={false}
                                     tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                                    interval={4}
                                 />
                                 <YAxis
                                     tickFormatter={(value) => formatCurrency(value as number)}
@@ -75,7 +77,16 @@ export default function DailyExpensesChart({ expenses }: { expenses: Despesa[] }
                                 />
                                 <Tooltip
                                     cursor={{ fill: 'hsl(var(--muted))' }}
-                                    content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+                                    content={<ChartTooltipContent 
+                                        labelFormatter={(label, payload) => {
+                                            if (payload && payload.length > 0) {
+                                                const data = payload[0].payload;
+                                                return format(data.fullDate, 'dd/MM/yyyy');
+                                            }
+                                            return label;
+                                        }}
+                                        formatter={(value) => formatCurrency(value as number)} 
+                                    />}
                                 />
                                 <Bar dataKey="total" fill="var(--color-total)" radius={4} />
                             </BarChart>
