@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Despesa } from "@/lib/types";
+import type { Despesa, Categoria } from "@/lib/types";
 import { expenses as initialExpenses, categories as initialCategories } from "@/lib/mock-data";
 import MonthlySummary from "@/components/dashboard/monthly-summary";
 import ExpenseTable from "@/components/dashboard/expense-table";
@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function DashboardPage() {
   const { toast } = useToast();
   const [expenses, setExpenses] = useState<Despesa[]>(initialExpenses);
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState<Categoria[]>(initialCategories);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<Despesa | null>(null);
 
