@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import type { Despesa, Categoria } from "@/lib/types";
 import MonthlySummary from "@/components/dashboard/monthly-summary";
 import ExpenseTable from "@/components/dashboard/expense-table";
@@ -10,14 +10,10 @@ import { Button } from "@/components/ui/button";
 import { File, PlusCircle } from "lucide-react";
 import AddExpenseSheet from "@/components/dashboard/add-expense-sheet";
 import { useToast } from "@/hooks/use-toast";
+import { AppContext } from "@/context/app-context";
 
-type DashboardPageProps = {
-    expenses?: Despesa[];
-    setExpenses: React.Dispatch<React.SetStateAction<Despesa[]>>;
-    categories: Categoria[];
-}
-
-export default function DashboardPage({ expenses = [], setExpenses, categories }: DashboardPageProps) {
+export default function DashboardPage() {
+  const { expenses, setExpenses, categories } = useContext(AppContext);
   const { toast } = useToast();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<Despesa | null>(null);
@@ -111,7 +107,6 @@ export default function DashboardPage({ expenses = [], setExpenses, categories }
         onOpenChange={setIsSheetOpen}
         onSaveExpense={handleSaveExpense}
         expenseToEdit={expenseToEdit}
-        categories={categories}
       />
     </>
   );

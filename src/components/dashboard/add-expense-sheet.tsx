@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -40,6 +40,7 @@ import { suggestExpenseCategory } from "@/ai/flows/suggest-expense-category";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import type { Despesa, Categoria } from "@/lib/types";
+import { AppContext } from "@/context/app-context";
 
 const expenseSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -58,10 +59,10 @@ type AddExpenseSheetProps = {
     onOpenChange: (isOpen: boolean) => void;
     onSaveExpense: (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }, id?: string) => void;
     expenseToEdit?: Despesa | null;
-    categories: Categoria[];
 };
 
-export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit, categories = [] }: AddExpenseSheetProps) {
+export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit }: AddExpenseSheetProps) {
+  const { categories } = useContext(AppContext);
   const { toast } = useToast();
   const [suggestedCategories, setSuggestedCategories] = useState<string[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -303,6 +304,3 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
     </Sheet>
   );
 }
-
-    
-    

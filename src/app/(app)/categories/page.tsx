@@ -1,6 +1,6 @@
 
 "use client";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle } from 'lucide-react';
@@ -8,15 +8,11 @@ import { CategoryTable } from '@/components/categories/category-table';
 import { AddEditCategoryDialog } from '@/components/categories/add-category-dialog';
 import type { Categoria } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { AppContext } from '@/context/app-context';
 
 
-type CategoriesPageProps = {
-    categories?: Categoria[];
-    setCategories: React.Dispatch<React.SetStateAction<Categoria[]>>;
-}
-
-export default function CategoriesPage({ categories = [], setCategories }: CategoriesPageProps) {
+export default function CategoriesPage() {
+    const { categories, setCategories } = useContext(AppContext);
     const { toast } = useToast();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [categoryToEdit, setCategoryToEdit] = useState<Categoria | null>(null);
