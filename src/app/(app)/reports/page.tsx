@@ -4,7 +4,7 @@
 import { useContext, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppContext } from '@/context/app-context';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
@@ -12,7 +12,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'
 export default function ReportsPage() {
     const { expenses } = useContext(AppContext);
 
-    const { chartData, chartConfig } = useMemo(() => {
+    const { chartData, chartConfig, totalExpenses } = useMemo(() => {
         const expenseDataByCat = expenses.reduce((acc, expense) => {
             const categoryName = expense.category?.nome || 'Outros';
             if (!acc[categoryName]) {
@@ -22,16 +22,14 @@ export default function ReportsPage() {
             return acc;
         }, {} as Record<string, number>);
 
+        const totalExpenses = Object.values(expenseDataByCat).reduce((sum, value) => sum + value, 0);
+
         const chartData = Object.entries(expenseDataByCat).map(([name, value]) => ({
             name,
             value,
-        })).sort((a,b) => a.value - b.value); // Sort for better visualization in bar chart
+        }));
 
-        const chartConfig: ChartConfig = {
-             value: {
-                label: "Total Gasto",
-             },
-        };
+        const chartConfig: ChartConfig = {};
         chartData.forEach((item, index) => {
             chartConfig[item.name] = {
                 label: item.name,
@@ -39,9 +37,15 @@ export default function ReportsPage() {
             }
         });
         
-        return { chartData, chartConfig };
+        return { chartData, chartConfig, totalExpenses };
     }, [expenses]);
 
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(value);
+    };
 
     return (
         <Card>
@@ -55,31 +59,45 @@ export default function ReportsPage() {
                 {expenses.length > 0 ? (
                 <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
                     <ResponsiveContainer width="100%" height={350}>
-                        <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
-                           <XAxis type="number" hide />
-                           <YAxis 
-                             dataKey="name" 
-                             type="category" 
-                             tickLine={false} 
-                             axisLine={false} 
-                             tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
-                             width={100}
-                           />
-                           <Tooltip
-                                cursor={{ fill: 'hsl(var(--muted))' }}
+                        <PieChart>
+                            <Tooltip
                                 content={
                                 <ChartTooltipContent
-                                    formatter={(value) =>
-                                        new Intl.NumberFormat('pt-BR', {
-                                        style: 'currency',
-                                        currency: 'BRL',
-                                        }).format(value as number)
-                                    }
+                                    formatter={(value, name) => {
+                                        const percentage = totalExpenses > 0 ? ((value as number) / totalExpenses) * 100 : 0;
+                                        return `${formatCurrency(value as number)} (${percentage.toFixed(2)}%)`;
+                                    }}
+                                    labelFormatter={(label) => chartConfig[label]?.label}
                                 />
                                 }
-                           />
-                           <Bar dataKey="value" layout="vertical" radius={4} fill="hsl(var(--primary))" />
-                        </BarChart>
+                            />
+                            <Pie
+                                data={chartData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={120}
+                                labelLine={false}
+                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                                    const RADIAN = Math.PI / 180;
+                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                                    return (
+                                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                                            {`${(percent * 100).toFixed(0)}%`}
+                                        </text>
+                                    );
+                                }}
+                            >
+                                {chartData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Legend wrapperStyle={{fontSize: "12px"}}/>
+                        </PieChart>
                     </ResponsiveContainer>
                 </ChartContainer>
                 ) : (
