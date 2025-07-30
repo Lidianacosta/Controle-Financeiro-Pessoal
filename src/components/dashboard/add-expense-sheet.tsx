@@ -324,7 +324,3 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
     </Sheet>
   );
 }
-
-    
-
-    
