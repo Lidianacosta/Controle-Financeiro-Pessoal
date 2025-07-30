@@ -80,10 +80,18 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
       const result = await suggestExpenseCategory({ description });
       if (result && result.categories) {
         setSuggestedCategories(result.categories);
-        toast({
-            title: "Sugestões prontas!",
-            description: "Encontramos algumas categorias para você.",
-        })
+        if(result.categories.length > 0) {
+            form.setValue('category', result.categories[0]);
+             toast({
+                title: "Sugestões prontas!",
+                description: "Encontramos algumas categorias para você.",
+            })
+        } else {
+            toast({
+                title: "Nenhuma sugestão encontrada",
+                description: "Não encontramos nenhuma categoria para essa descrição.",
+            })
+        }
       }
     } catch (error) {
       console.error("Error suggesting categories:", error);
@@ -113,8 +121,9 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
             Preencha os detalhes da sua despesa. Use a IA para sugerir categorias!
           </SheetDescription>
         </SheetHeader>
+        <div className="py-4 overflow-y-auto h-[calc(100vh-120px)] pr-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 overflow-y-auto h-[calc(100vh-120px)] pr-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="nome"
@@ -158,7 +167,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione uma categoria" />
-                      </Trigger>
+                      </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {suggestedCategories.length > 0 && (
@@ -254,6 +263,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
             </SheetFooter>
           </form>
         </Form>
+        </div>
       </SheetContent>
     </Sheet>
   );
