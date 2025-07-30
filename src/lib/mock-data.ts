@@ -1,4 +1,4 @@
-import type { Despesa, Categoria } from './types';
+import type { Despesa, Categoria, User } from './types';
 
 export const categories: Categoria[] = [
   { id: '1', name: 'Alimentação', icon: 'Utensils', descricao: 'Despesas com comida, restaurantes, etc.' },
@@ -19,3 +19,13 @@ export const expenses: Despesa[] = [
   { id: '6', nome: 'Curso de Inglês', valor: 350, descricao: 'Mensalidade do curso', data: new Date(2024, 6, 20), status: 'Paga', category: categories[5] },
   { id: '7', nome: 'Supermercado', valor: 450, descricao: 'Compras do mês', data: new Date(2024, 5, 28), status: 'Paga', category: categories[0] },
 ];
+
+export const user: User = {
+    id: '1',
+    nome: 'Fulano de Tal',
+    cpf: '123.456.789-00',
+    email: 'fulano@example.com',
+    data_de_aniversario: new Date(1990, 5, 15),
+    numero_de_telefone: '(99) 99999-9999',
+    renda_mensal: 7500
+}

@@ -28,8 +28,20 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useContext } from "react";
+import { AppContext } from "@/context/app-context";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Header() {
+  const { user } = useContext(AppContext);
+
+  const getInitials = (name?: string) => {
+    if (!name) return "";
+    const names = name.split(' ');
+    const initials = names.map(n => n[0]).join('');
+    return initials.toUpperCase().slice(0, 2);
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -89,14 +101,10 @@ export default function Header() {
             size="icon"
             className="overflow-hidden rounded-full"
           >
-            <Image
-              src="https://placehold.co/36x36.png"
-              width={36}
-              height={36}
-              alt="Avatar"
-              className="overflow-hidden rounded-full"
-              data-ai-hint="user avatar"
-            />
+             <Avatar className="h-9 w-9">
+                  <AvatarImage src={user?.nome ? `https://ui-avatars.com/api/?name=${user.nome}&background=random` : "https://placehold.co/36x36.png"} alt="Avatar"  data-ai-hint="user avatar" />
+                  <AvatarFallback>{getInitials(user?.nome)}</AvatarFallback>
+              </Avatar>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
