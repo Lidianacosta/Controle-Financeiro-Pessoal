@@ -94,7 +94,7 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTabl
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onDelete(expense.id)} variant="success">Excluir</AlertDialogAction>
+                    <AlertDialogAction onClick={() => onDelete(expense.id)} className="bg-destructive hover:bg-destructive/90">Excluir</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
                   </AlertDialog>
