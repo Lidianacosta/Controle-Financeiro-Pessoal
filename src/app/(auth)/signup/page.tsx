@@ -34,11 +34,12 @@ import { useRouter } from "next/navigation";
 const signupSchema = z.object({
     nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
     email: z.string().email("Email inválido."),
-    cpf: z.string().min(11, "CPF deve ter 11 caracteres.").max(11, "CPF deve ter 11 caracteres."),
     numero_de_telefone: z.string().optional(),
-    data_de_aniversario: z.date().optional(),
-    senha: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
-    renda_mensal: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
+    data_de_nascimento: z.date().optional(),
+    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
+    renda_fixa: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
+    renda_extra: z.coerce.number().min(0, "Renda deve ser um valor positivo.").optional(),
+    meta_mensal: z.coerce.number().min(0, "Meta deve ser um valor positivo.").optional(),
 });
 
 export default function SignupPage() {
@@ -48,8 +49,11 @@ export default function SignupPage() {
     defaultValues: {
       nome: "",
       email: "",
-      cpf: "",
-      renda_mensal: 0,
+      password: "",
+      renda_fixa: 0,
+      numero_de_telefone: "",
+      renda_extra: 0,
+      meta_mensal: 0,
     },
   });
 
@@ -105,19 +109,6 @@ export default function SignupPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <FormField
                   control={form.control}
-                  name="cpf"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>CPF</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Seu CPF" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={form.control}
                   name="numero_de_telefone"
                   render={({ field }) => (
                     <FormItem>
@@ -129,12 +120,9 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
+                 <FormField
                     control={form.control}
-                    name="data_de_aniversario"
+                    name="data_de_nascimento"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
                         <FormLabel>Data de Nascimento (Opcional)</FormLabel>
@@ -173,9 +161,11 @@ export default function SignupPage() {
                         </FormItem>
                     )}
                     />
+              </div>
+
                 <FormField
                   control={form.control}
-                  name="senha"
+                  name="password"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
@@ -186,14 +176,14 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-              </div>
-
+            
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                 control={form.control}
-                name="renda_mensal"
+                name="renda_fixa"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Renda Mensal</FormLabel>
+                    <FormLabel>Renda Fixa</FormLabel>
                     <FormControl>
                         <Input type="number" placeholder="R$" {...field} />
                     </FormControl>
@@ -201,6 +191,33 @@ export default function SignupPage() {
                     </FormItem>
                 )}
                 />
+                 <FormField
+                control={form.control}
+                name="renda_extra"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Renda Extra (Opcional)</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="R$" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                 <FormField
+                control={form.control}
+                name="meta_mensal"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Meta Mensal (Opcional)</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="R$" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+              </div>
               
               <Button type="submit" className="w-full">
                 Criar Conta
