@@ -108,7 +108,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <MonthlySummary expenses={expenses} />
+      <MonthlySummary />
       <div className="grid gap-8 md:grid-cols-2">
         <FinancialEvolutionChart expenses={expenses} />
         <DailyExpensesChart expenses={expenses} />

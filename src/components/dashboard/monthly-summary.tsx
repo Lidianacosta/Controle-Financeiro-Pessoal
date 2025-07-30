@@ -3,22 +3,24 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, CreditCard, Landmark, TrendingUp } from "lucide-react";
-import type { Despesa, User } from "@/lib/types";
-import { useContext } from "react";
+import type { Despesa } from "@/lib/types";
+import { useContext, useMemo } from "react";
 import { AppContext } from "@/context/app-context";
+import { Progress } from "../ui/progress";
 
-type MonthlySummaryProps = {
-  expenses: Despesa[];
-};
+export default function MonthlySummary() {
+  const { user, expenses } = useContext(AppContext);
 
-export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
-  const { user } = useContext(AppContext);
-  const totalExpenses = expenses.reduce((acc, expense) => acc + expense.valor, 0);
-  const income = user?.renda_mensal || 0;
-  const savingsGoal = user?.meta_de_economia || 0;
-  const balance = income - totalExpenses;
-  const savings = income - totalExpenses;
-  const savingsPercentage = savingsGoal > 0 ? (savings / savingsGoal) * 100 : 0;
+  const { totalExpenses, income, savingsGoal, balance, savedAmount, savingsPercentage } = useMemo(() => {
+    const totalExpenses = expenses.reduce((acc, expense) => acc + expense.valor, 0);
+    const income = user?.renda_mensal || 0;
+    const savingsGoal = user?.meta_de_economia || 0;
+    const balance = income - totalExpenses;
+    const savedAmount = Math.max(0, balance);
+    const savingsPercentage = savingsGoal > 0 ? (savedAmount / savingsGoal) * 100 : 0;
+    
+    return { totalExpenses, income, savingsGoal, balance, savedAmount, savingsPercentage };
+  }, [expenses, user]);
 
 
   const formatCurrency = (value: number) => {
@@ -40,7 +42,7 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
             {formatCurrency(income)}
           </div>
           <p className="text-xs text-muted-foreground">
-            Baseado na sua renda cadastrada
+            Sua renda mensal cadastrada
           </p>
         </CardContent>
       </Card>
@@ -54,7 +56,7 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
             {formatCurrency(totalExpenses)}
           </div>
           <p className="text-xs text-muted-foreground">
-            Total de despesas do mês
+            Total de despesas neste mês
           </p>
         </CardContent>
       </Card>
@@ -77,11 +79,12 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {formatCurrency(savings)}
+            {formatCurrency(savedAmount)}
           </div>
           <p className="text-xs text-muted-foreground">
-             {savingsPercentage.toFixed(0)}% da sua meta de {formatCurrency(savingsGoal)}
+             Você atingiu {savingsPercentage.toFixed(0)}% da sua meta de {formatCurrency(savingsGoal)}
           </p>
+          <Progress value={savingsPercentage} className="mt-2 h-2" />
         </CardContent>
       </Card>
     </div>
