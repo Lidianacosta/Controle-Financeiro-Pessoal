@@ -28,8 +28,8 @@ export default function LoginPage() {
       router.push('/dashboard');
     } else {
       toast({
-        title: "Usuário não encontrado",
-        description: "Por favor, crie uma conta antes de tentar fazer o login.",
+        title: "Cadastro não encontrado",
+        description: "Não foi feito cadastro ainda. Por favor, crie uma conta.",
         variant: "destructive",
       });
     }
