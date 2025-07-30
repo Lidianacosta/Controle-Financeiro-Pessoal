@@ -30,7 +30,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       // @ts-ignore
-      return React.cloneElement(child, { categories, setCategories, expenses, setExpenses });
+      const page = child.type.name;
+      if (page === 'CategoriesPage') {
+        // @ts-ignore
+        return React.cloneElement(child, { categories, setCategories });
+      }
+      if (page === 'DashboardPage') {
+         // @ts-ignore
+        return React.cloneElement(child, { categories, expenses, setExpenses });
+      }
     }
     return child;
   });
