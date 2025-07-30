@@ -63,7 +63,7 @@ export default function Header() {
               Categorias
             </Link>
             <Link
-              href="#"
+              href="/reports"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
               <LineChart className="h-5 w-5" />

@@ -24,7 +24,7 @@ export default function CategoriesPage() {
     const handleSaveCategory = (categoryData: Omit<Categoria, 'id'>, id?: string) => {
         if (id) {
             // Editing existing category
-            setCategories(prev => prev.map(c => c.id === id ? { ...c, ...categoryData } : c));
+            setCategories(prev => prev.map(c => c.id === id ? { ...c, ...categoryData, id } : c));
             toast({
                 title: "Categoria Atualizada!",
                 description: `A categoria ${categoryData.nome} foi atualizada com sucesso.`,
