@@ -24,13 +24,14 @@ export default function DashboardPage() {
   };
 
   const handleSaveExpense = (expenseData: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }, id?: string) => {
+    const category = categories.find(c => c.nome === expenseData.category)
     if (id) {
         // Editing
         setExpenses(prev => prev.map(e => e.id === id ? { 
             ...e, 
             ...expenseData,
             id, 
-            category: categories.find(c => c.nome === expenseData.category),
+            category,
             date: new Date(expenseData.date)
         } : e));
         toast({
@@ -43,7 +44,7 @@ export default function DashboardPage() {
         const newExpense: Despesa = {
             ...expenseData,
             id: `exp-${Date.now()}`,
-            category: categories.find(c => c.nome === expenseData.category),
+            category,
             date: new Date(expenseData.date),
         };
         setExpenses(prev => [newExpense, ...prev]);
@@ -84,7 +85,7 @@ export default function DashboardPage() {
             `"${expense.descricao.replace(/"/g, '""')}"`,
             new Date(expense.data).toLocaleDateString("pt-BR"),
             expense.status,
-            `"${expense.category?.nome.replace(/"/g, '""') || 'N/A'}"`,
+            `"${(expense.category?.nome || 'N/A').replace(/"/g, '""')}"`,
         ].join(',')
     );
 
