@@ -23,14 +23,17 @@ import * as Lucide from "lucide-react";
 
 type IconName = keyof typeof Lucide;
 
-const Icon = ({ name, ...props }: { name?: string, [key: string]: any }) => {
-    // @ts-ignore
-    const LucideIcon = Lucide[name as IconName] || Lucide.MoreHorizontal;
+// A robust Icon component that handles potential missing icons gracefully.
+const Icon = ({ name, ...props }: { name?: string; [key: string]: any }) => {
+    // Check if the name is a valid key in the Lucide object
+    const isValidIcon = name && Object.prototype.hasOwnProperty.call(Lucide, name);
+    // @ts-ignore - We are checking for the key's existence before using it.
+    const LucideIcon = isValidIcon ? Lucide[name as IconName] : Lucide.MoreHorizontal;
     return <LucideIcon {...props} />;
 };
 
 
-export function CategoryTable({ categories }: { categories: Categoria[] }) {
+export function CategoryTable({ categories, onEdit }: { categories: Categoria[], onEdit: (category: Categoria) => void }) {
   return (
     <Table>
       <TableHeader>
@@ -63,7 +66,7 @@ export function CategoryTable({ categories }: { categories: Categoria[] }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(category)}>Editar</DropdownMenuItem>
                   <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

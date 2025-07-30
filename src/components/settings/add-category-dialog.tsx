@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import type { Categoria } from "@/lib/types";
+import { useEffect } from "react";
+import { IconPicker } from "./icon-picker";
 
 const categorySchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -34,13 +36,14 @@ const categorySchema = z.object({
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
-type AddCategoryDialogProps = {
+type AddEditCategoryDialogProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onAddCategory: (category: Omit<Categoria, "id">) => void;
+    onSaveCategory: (category: Omit<Categoria, "id">, id?: string) => void;
+    categoryToEdit?: Categoria | null;
 };
 
-export function AddCategoryDialog({ isOpen, onOpenChange, onAddCategory }: AddCategoryDialogProps) {
+export function AddEditCategoryDialog({ isOpen, onOpenChange, onSaveCategory, categoryToEdit }: AddEditCategoryDialogProps) {
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
@@ -50,19 +53,37 @@ export function AddCategoryDialog({ isOpen, onOpenChange, onAddCategory }: AddCa
     },
   });
 
+  useEffect(() => {
+    if (categoryToEdit && isOpen) {
+      form.reset({
+        nome: categoryToEdit.nome,
+        descricao: categoryToEdit.descricao || "",
+        icon: categoryToEdit.icon || "MoreHorizontal"
+      });
+    } else if (!isOpen) {
+      form.reset({
+        nome: "",
+        descricao: "",
+        icon: "MoreHorizontal",
+      });
+    }
+  }, [categoryToEdit, isOpen, form]);
+
   const onSubmit = (data: CategoryFormValues) => {
-    onAddCategory(data);
-    form.reset();
+    onSaveCategory(data, categoryToEdit?.id);
     onOpenChange(false);
   };
+
+  const dialogTitle = categoryToEdit ? "Editar Categoria" : "Adicionar Nova Categoria";
+  const dialogDescription = categoryToEdit ? "Atualize os detalhes da sua categoria." : "Preencha os detalhes da nova categoria de despesas.";
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Adicionar Nova Categoria</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>
-            Preencha os detalhes da nova categoria de despesas.
+            {dialogDescription}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
@@ -99,9 +120,12 @@ export function AddCategoryDialog({ isOpen, onOpenChange, onAddCategory }: AddCa
                 name="icon"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ícone (Lucide)</FormLabel>
+                    <FormLabel>Ícone</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Home" {...field} />
+                       <IconPicker 
+                        value={field.value || "MoreHorizontal"} 
+                        onChange={field.onChange} 
+                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -111,7 +135,7 @@ export function AddCategoryDialog({ isOpen, onOpenChange, onAddCategory }: AddCa
                   <DialogClose asChild>
                       <Button type="button" variant="outline">Cancelar</Button>
                   </DialogClose>
-                  <Button type="submit">Salvar Categoria</Button>
+                  <Button type="submit">Salvar</Button>
               </DialogFooter>
             </form>
           </Form>

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle } from 'lucide-react';
 import { CategoryTable } from '@/components/categories/category-table';
-import { AddCategoryDialog } from '@/components/settings/add-category-dialog';
+import { AddEditCategoryDialog } from '@/components/settings/add-category-dialog';
 import { categories as initialCategories } from '@/lib/mock-data';
 import type { Categoria } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -14,17 +14,33 @@ export default function CategoriesPage() {
     const { toast } = useToast();
     const [categories, setCategories] = useState<Categoria[]>(initialCategories);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [categoryToEdit, setCategoryToEdit] = useState<Categoria | null>(null);
 
-    const handleAddCategory = (newCategoryData: Omit<Categoria, 'id'>) => {
-        const newCategory: Categoria = {
-            id: `cat-${Date.now()}`,
-            ...newCategoryData
+    const handleOpenDialog = (category?: Categoria) => {
+        setCategoryToEdit(category || null);
+        setIsDialogOpen(true);
+    };
+
+    const handleSaveCategory = (categoryData: Omit<Categoria, 'id'>, id?: string) => {
+        if (id) {
+            // Editing existing category
+            setCategories(prev => prev.map(c => c.id === id ? { ...c, ...categoryData } : c));
+            toast({
+                title: "Categoria Atualizada!",
+                description: `A categoria ${categoryData.nome} foi atualizada com sucesso.`,
+            });
+        } else {
+            // Adding new category
+            const newCategory: Categoria = {
+                id: `cat-${Date.now()}`,
+                ...categoryData
+            }
+            setCategories(prev => [...prev, newCategory]);
+            toast({
+                title: "Categoria Adicionada!",
+                description: `A categoria ${newCategory.nome} foi criada com sucesso.`,
+            });
         }
-        setCategories(prev => [...prev, newCategory]);
-        toast({
-            title: "Categoria Adicionada!",
-            description: `A categoria ${newCategory.nome} foi criada com sucesso.`,
-        });
     }
 
     return (
@@ -37,7 +53,7 @@ export default function CategoriesPage() {
                             Gerencie as categorias de despesas.
                         </CardDescription>
                     </div>
-                    <Button size="sm" className="h-8 gap-1" onClick={() => setIsDialogOpen(true)}>
+                    <Button size="sm" className="h-8 gap-1" onClick={() => handleOpenDialog()}>
                         <PlusCircle className="h-3.5 w-3.5" />
                         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                             Nova Categoria
@@ -45,13 +61,14 @@ export default function CategoriesPage() {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <CategoryTable categories={categories} />
+                    <CategoryTable categories={categories} onEdit={handleOpenDialog} />
                 </CardContent>
             </Card>
-            <AddCategoryDialog 
+            <AddEditCategoryDialog 
                 isOpen={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
-                onAddCategory={handleAddCategory}
+                onSaveCategory={handleSaveCategory}
+                categoryToEdit={categoryToEdit}
             />
         </>
     )
