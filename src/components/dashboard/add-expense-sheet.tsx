@@ -41,6 +41,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { useToast } from "@/hooks/use-toast";
 import type { Despesa, Categoria } from "@/lib/types";
 import { AppContext } from "@/context/app-context";
+import { Switch } from "../ui/switch";
 
 const expenseSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -49,7 +50,7 @@ const expenseSchema = z.object({
   data: z.date({ required_error: "A data é obrigatória." }),
   status: z.enum(["Paga", "A Pagar"], { required_error: "Selecione o status." }),
   category: z.string({ required_error: "Selecione uma categoria." }),
-  isFixed: z.boolean().optional(),
+  isFixed: z.boolean().default(false),
 });
 
 type ExpenseFormValues = z.infer<typeof expenseSchema>;
@@ -290,6 +291,25 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="isFixed"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                        <FormLabel>É uma despesa fixa?</FormLabel>
+                        <FormMessage />
+                    </div>
+                    <FormControl>
+                        <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        />
+                    </FormControl>
+                </FormItem>
+              )}
+            />
             
             <SheetFooter className="pt-4">
                 <SheetClose asChild>
@@ -304,3 +324,5 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
     </Sheet>
   );
 }
+
+    

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useContext } from "react";
-import type { Despesa, Categoria } from "@/lib/types";
+import type { Despesa } from "@/lib/types";
 import MonthlySummary from "@/components/dashboard/monthly-summary";
 import ExpenseTable from "@/components/dashboard/expense-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,8 @@ import { File, PlusCircle } from "lucide-react";
 import AddExpenseSheet from "@/components/dashboard/add-expense-sheet";
 import { useToast } from "@/hooks/use-toast";
 import { AppContext } from "@/context/app-context";
+import FinancialEvolutionChart from "@/components/dashboard/financial-evolution-chart";
+import DailyExpensesChart from "@/components/dashboard/daily-expenses-chart";
 
 export default function DashboardPage() {
   const { expenses, setExpenses, categories } = useContext(AppContext);
@@ -105,8 +107,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <>
+    <div className="space-y-8">
       <MonthlySummary expenses={expenses} />
+      <div className="grid gap-8 md:grid-cols-2">
+        <FinancialEvolutionChart expenses={expenses} />
+        <DailyExpensesChart expenses={expenses} />
+      </div>
       <Tabs defaultValue="all">
         <div className="flex items-center">
           <TabsList>
@@ -145,6 +151,8 @@ export default function DashboardPage() {
         onSaveExpense={handleSaveExpense}
         expenseToEdit={expenseToEdit}
       />
-    </>
+    </div>
   );
 }
+
+    
