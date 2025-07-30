@@ -30,7 +30,7 @@ import { useEffect } from "react";
 import { IconPicker } from "../settings/icon-picker";
 import * as Lucide from 'lucide-react';
 
-const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object' && key !== 'createLucideIcon' && key !== 'icons');
+const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object' && key !== 'createLucideIcon' && key !== 'icons' && key !== 'default');
 
 const categorySchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
