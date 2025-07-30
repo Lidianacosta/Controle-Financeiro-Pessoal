@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from 'react';
@@ -9,7 +10,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import * as Lucide from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object');
+const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object' && key !== 'createLucideIcon' && key !== 'icons');
 
 // A more robust Icon component that handles potential missing icons gracefully.
 const Icon = ({ name, ...props }: { name?: string; [key: string]: any }) => {
