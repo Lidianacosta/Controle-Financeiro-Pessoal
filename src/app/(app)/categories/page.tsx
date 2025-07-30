@@ -54,7 +54,7 @@ export default function CategoriesPage() {
                             Gerencie as categorias de despesas.
                         </CardDescription>
                     </div>
-                    <Button size="sm" className="h-8 gap-1" onClick={() => handleOpenDialog()}>
+                    <Button size="sm" className="h-8 gap-1" onClick={() => handleOpenDialog()} variant="success">
                         <PlusCircle className="h-3.5 w-3.5" />
                         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                             Nova Categoria
