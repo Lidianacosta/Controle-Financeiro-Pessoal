@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import type { Despesa, Categoria } from "@/lib/types";
-import { expenses as initialExpenses, categories as initialCategories } from "@/lib/mock-data";
 import MonthlySummary from "@/components/dashboard/monthly-summary";
 import ExpenseTable from "@/components/dashboard/expense-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,10 +11,14 @@ import { File, PlusCircle } from "lucide-react";
 import AddExpenseSheet from "@/components/dashboard/add-expense-sheet";
 import { useToast } from "@/hooks/use-toast";
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+    expenses: Despesa[];
+    setExpenses: React.Dispatch<React.SetStateAction<Despesa[]>>;
+    categories: Categoria[];
+}
+
+export default function DashboardPage({ expenses, setExpenses, categories }: DashboardPageProps) {
   const { toast } = useToast();
-  const [expenses, setExpenses] = useState<Despesa[]>(initialExpenses);
-  const [categories, setCategories] = useState<Categoria[]>(initialCategories);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<Despesa | null>(null);
 

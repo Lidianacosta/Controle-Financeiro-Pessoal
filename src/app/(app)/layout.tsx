@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from "next/link";
 import {
   Home,
@@ -18,8 +18,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Header from '@/components/dashboard/header';
+import { categories as initialCategories } from '@/lib/mock-data';
+import { expenses as initialExpenses } from '@/lib/mock-data';
+import type { Categoria, Despesa } from '@/lib/types';
+
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const [categories, setCategories] = useState<Categoria[]>(initialCategories);
+  const [expenses, setExpenses] = useState<Despesa[]>(initialExpenses);
+
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      // @ts-ignore
+      return React.cloneElement(child, { categories, setCategories, expenses, setExpenses });
+    }
+    return child;
+  });
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -90,7 +105,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <Header />
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          {children}
+          {childrenWithProps}
         </main>
       </div>
     </div>

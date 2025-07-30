@@ -6,15 +6,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PlusCircle } from 'lucide-react';
 import { CategoryTable } from '@/components/categories/category-table';
 import { AddEditCategoryDialog } from '@/components/categories/add-category-dialog';
-import { categories as initialCategories } from '@/lib/mock-data';
 import type { Categoria } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 
-export default function CategoriesPage() {
+type CategoriesPageProps = {
+    categories: Categoria[];
+    setCategories: React.Dispatch<React.SetStateAction<Categoria[]>>;
+}
+
+export default function CategoriesPage({ categories, setCategories }: CategoriesPageProps) {
     const { toast } = useToast();
-    const [categories, setCategories] = useState<Categoria[]>(initialCategories);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [categoryToEdit, setCategoryToEdit] = useState<Categoria | null>(null);
 
