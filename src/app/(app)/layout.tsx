@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from "next/link";
 import {
   Home,
@@ -63,7 +63,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href="#"
+                    href="/reports"
                     className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                   >
                     <LineChart className="h-5 w-5" />
