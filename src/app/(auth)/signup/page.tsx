@@ -13,7 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Wallet, Calendar as CalendarIcon } from "lucide-react";
 import {
   Form,
@@ -33,13 +32,12 @@ import { useRouter } from "next/navigation";
 
 const signupSchema = z.object({
     nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+    cpf: z.string().min(11, "CPF deve ter pelo menos 11 caracteres.").max(14, "CPF inválido."),
     email: z.string().email("Email inválido."),
     numero_de_telefone: z.string().optional(),
-    data_de_nascimento: z.date().optional(),
-    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
-    renda_fixa: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
-    renda_extra: z.coerce.number().min(0, "Renda deve ser um valor positivo.").optional(),
-    meta_mensal: z.coerce.number().min(0, "Meta deve ser um valor positivo.").optional(),
+    data_de_aniversario: z.date().optional(),
+    senha: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
+    renda_mensal: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
 });
 
 export default function SignupPage() {
@@ -48,12 +46,11 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       nome: "",
+      cpf: "",
       email: "",
-      password: "",
-      renda_fixa: 0,
+      senha: "",
+      renda_mensal: 0,
       numero_de_telefone: "",
-      renda_extra: 0,
-      meta_mensal: 0,
     },
   });
 
@@ -93,6 +90,22 @@ export default function SignupPage() {
                 />
                 <FormField
                   control={form.control}
+                  name="cpf"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>CPF</FormLabel>
+                      <FormControl>
+                        <Input placeholder="000.000.000-00" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -104,9 +117,6 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <FormField
                   control={form.control}
                   name="numero_de_telefone"
@@ -120,9 +130,12 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <FormField
                     control={form.control}
-                    name="data_de_nascimento"
+                    name="data_de_aniversario"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
                         <FormLabel>Data de Nascimento (Opcional)</FormLabel>
@@ -161,11 +174,9 @@ export default function SignupPage() {
                         </FormItem>
                     )}
                     />
-              </div>
-
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="senha"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
@@ -176,48 +187,21 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-            
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                control={form.control}
-                name="renda_fixa"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Renda Fixa</FormLabel>
-                    <FormControl>
-                        <Input type="number" placeholder="R$" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                 <FormField
-                control={form.control}
-                name="renda_extra"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Renda Extra (Opcional)</FormLabel>
-                    <FormControl>
-                        <Input type="number" placeholder="R$" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                 <FormField
-                control={form.control}
-                name="meta_mensal"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Meta Mensal (Opcional)</FormLabel>
-                    <FormControl>
-                        <Input type="number" placeholder="R$" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
               </div>
+
+              <FormField
+                control={form.control}
+                name="renda_mensal"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Renda Mensal</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="R$" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
               
               <Button type="submit" className="w-full">
                 Criar Conta
