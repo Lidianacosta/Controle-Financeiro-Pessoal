@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -13,13 +14,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/dashboard');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      router.push('/dashboard');
+    } else {
+      toast({
+        title: "Usuário não encontrado",
+        description: "Por favor, crie uma conta antes de tentar fazer o login.",
+        variant: "destructive",
+      });
+    }
   }
   
   return (

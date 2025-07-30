@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -28,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 
 const signupSchema = z.object({
@@ -42,6 +44,7 @@ const signupSchema = z.object({
 
 export default function SignupPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -56,8 +59,17 @@ export default function SignupPage() {
   });
 
   function onSubmit(values: z.infer<typeof signupSchema>) {
-    console.log(values);
-    router.push('/dashboard');
+    const newUser = {
+      id: `user-${Date.now()}`,
+      ...values,
+    }
+    localStorage.setItem('user', JSON.stringify(newUser));
+    toast({
+      title: "Conta criada com sucesso!",
+      description: "Você já pode fazer o login.",
+      variant: "success",
+    })
+    router.push('/login');
   }
 
   return (
