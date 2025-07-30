@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -16,20 +17,56 @@ export default function DashboardPage() {
   const { toast } = useToast();
   const [expenses, setExpenses] = useState<Despesa[]>(initialExpenses);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [expenseToEdit, setExpenseToEdit] = useState<Despesa | null>(null);
 
-  const handleAddExpense = (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }) => {
-    const newExpense: Despesa = {
-      ...expense,
-      id: `exp-${Date.now()}`,
-      category: categories.find(c => c.name === expense.category),
-      date: new Date(expense.date),
-    };
-    setExpenses(prev => [newExpense, ...prev]);
-    toast({
-      title: "Despesa Adicionada!",
-      description: `${expense.nome} foi adicionada com sucesso.`,
-    })
+  const handleOpenSheet = (expense?: Despesa) => {
+    setExpenseToEdit(expense || null);
+    setIsSheetOpen(true);
   };
+
+  const handleSaveExpense = (expenseData: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }, id?: string) => {
+    if (id) {
+        // Editing
+        setExpenses(prev => prev.map(e => e.id === id ? { 
+            ...e, 
+            ...expenseData,
+            id, 
+            category: categories.find(c => c.nome === expenseData.category),
+            date: new Date(expenseData.date)
+        } : e));
+        toast({
+            title: "Despesa Atualizada!",
+            description: `${expenseData.nome} foi atualizada com sucesso.`,
+            variant: 'success'
+        });
+    } else {
+        // Adding
+        const newExpense: Despesa = {
+            ...expenseData,
+            id: `exp-${Date.now()}`,
+            category: categories.find(c => c.nome === expenseData.category),
+            date: new Date(expenseData.date),
+        };
+        setExpenses(prev => [newExpense, ...prev]);
+        toast({
+            title: "Despesa Adicionada!",
+            description: `${expenseData.nome} foi adicionada com sucesso.`,
+            variant: 'success'
+        });
+    }
+  };
+
+  const handleDeleteExpense = (expenseId: string) => {
+    const expenseToDelete = expenses.find(e => e.id === expenseId);
+    if(expenseToDelete) {
+        setExpenses(prev => prev.filter(e => e.id !== expenseId));
+        toast({
+            title: "Despesa Excluída!",
+            description: `A despesa "${expenseToDelete.nome}" foi excluída.`,
+            variant: 'success'
+        })
+    }
+  }
 
   return (
     <>
@@ -48,7 +85,7 @@ export default function DashboardPage() {
                 Exportar
               </span>
             </Button>
-            <Button size="sm" className="h-8 gap-1" onClick={() => setIsSheetOpen(true)}>
+            <Button size="sm" className="h-8 gap-1" onClick={() => handleOpenSheet()} variant="success">
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Adicionar Despesa
@@ -57,19 +94,20 @@ export default function DashboardPage() {
           </div>
         </div>
         <TabsContent value="all">
-          <ExpenseTable expenses={expenses} />
+          <ExpenseTable expenses={expenses} onEdit={handleOpenSheet} onDelete={handleDeleteExpense} />
         </TabsContent>
         <TabsContent value="paid">
-          <ExpenseTable expenses={expenses.filter(e => e.status === 'Paga')} />
+          <ExpenseTable expenses={expenses.filter(e => e.status === 'Paga')} onEdit={handleOpenSheet} onDelete={handleDeleteExpense} />
         </TabsContent>
         <TabsContent value="pending">
-          <ExpenseTable expenses={expenses.filter(e => e.status === 'A Pagar')} />
+          <ExpenseTable expenses={expenses.filter(e => e.status === 'A Pagar')} onEdit={handleOpenSheet} onDelete={handleDeleteExpense} />
         </TabsContent>
       </Tabs>
       <AddExpenseSheet 
         isOpen={isSheetOpen}
         onOpenChange={setIsSheetOpen}
-        onAddExpense={handleAddExpense}
+        onSaveExpense={handleSaveExpense}
+        expenseToEdit={expenseToEdit}
       />
     </>
   );

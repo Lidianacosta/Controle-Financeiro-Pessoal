@@ -18,12 +18,15 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 
 type ExpenseTableProps = {
   expenses: Despesa[];
+  onEdit: (expense: Despesa) => void;
+  onDelete: (id: string) => void;
 };
 
-export default function ExpenseTable({ expenses }: ExpenseTableProps) {
+export default function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTableProps) {
   return (
     <Card>
       <CardHeader>
@@ -55,7 +58,7 @@ export default function ExpenseTable({ expenses }: ExpenseTableProps) {
                   {new Date(expense.data).toLocaleDateString("pt-BR")}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={expense.status === 'Paga' ? 'default' : 'destructive'} >
+                  <Badge variant={expense.status === 'Paga' ? 'success' : 'destructive'} >
                     {expense.status}
                   </Badge>
                 </TableCell>
@@ -66,6 +69,7 @@ export default function ExpenseTable({ expenses }: ExpenseTableProps) {
                   })}
                 </TableCell>
                 <TableCell>
+                <AlertDialog>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -75,10 +79,25 @@ export default function ExpenseTable({ expenses }: ExpenseTableProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                      <DropdownMenuItem>Editar</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(expense)}>Editar</DropdownMenuItem>
+                       <AlertDialogTrigger asChild>
+                        <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
+                      </AlertDialogTrigger>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Essa ação não pode ser desfeita. Isso excluirá permanentemente a despesa.
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDelete(expense.id)} variant="success">Excluir</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))}

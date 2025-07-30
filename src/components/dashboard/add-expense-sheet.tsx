@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -39,7 +40,7 @@ import { suggestExpenseCategory } from "@/ai/flows/suggest-expense-category";
 import { categories } from "@/lib/mock-data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import type { DespesaStatus, Despesa } from "@/lib/types";
+import type { Despesa } from "@/lib/types";
 
 const expenseSchema = z.object({
   nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -56,10 +57,11 @@ type ExpenseFormValues = z.infer<typeof expenseSchema>;
 type AddExpenseSheetProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onAddExpense: (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }) => void;
+    onSaveExpense: (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }, id?: string) => void;
+    expenseToEdit?: Despesa | null;
 };
 
-export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: AddExpenseSheetProps) {
+export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit }: AddExpenseSheetProps) {
   const { toast } = useToast();
   const [suggestedCategories, setSuggestedCategories] = useState<string[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -74,6 +76,32 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
       isFixed: false,
     },
   });
+  
+  useEffect(() => {
+    if (expenseToEdit && isOpen) {
+        form.reset({
+            nome: expenseToEdit.nome,
+            valor: expenseToEdit.valor,
+            descricao: expenseToEdit.descricao,
+            data: new Date(expenseToEdit.data),
+            status: expenseToEdit.status,
+            category: expenseToEdit.category?.nome,
+            isFixed: expenseToEdit.isFixed
+        });
+    } else if (!isOpen) {
+        form.reset({
+            nome: "",
+            valor: 0,
+            descricao: "",
+            status: "A Pagar",
+            data: new Date(),
+            isFixed: false,
+            category: undefined
+        });
+        setSuggestedCategories([]);
+    }
+  }, [expenseToEdit, isOpen, form]);
+
 
   const description = form.watch("descricao");
 
@@ -90,6 +118,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
              toast({
                 title: "Sugestões prontas!",
                 description: "Encontramos algumas categorias para você.",
+                variant: 'success'
             })
         } else {
             toast({
@@ -111,19 +140,20 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
   };
 
   const onSubmit = (data: ExpenseFormValues) => {
-    onAddExpense(data as any);
-    form.reset();
-    setSuggestedCategories([]);
+    onSaveExpense(data as any, expenseToEdit?.id);
     onOpenChange(false);
   };
+
+  const dialogTitle = expenseToEdit ? "Editar Despesa" : "Adicionar Nova Despesa";
+  const dialogDescription = expenseToEdit ? "Atualize os detalhes da sua despesa." : "Preencha os detalhes da sua despesa. Use a IA para sugerir categorias!";
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-lg w-[90vw]">
         <SheetHeader>
-          <SheetTitle>Adicionar Nova Despesa</SheetTitle>
+          <SheetTitle>{dialogTitle}</SheetTitle>
           <SheetDescription>
-            Preencha os detalhes da sua despesa. Use a IA para sugerir categorias!
+            {dialogDescription}
           </SheetDescription>
         </SheetHeader>
         <div className="py-4 overflow-y-auto h-[calc(100vh-120px)] pr-4">
@@ -168,7 +198,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                   <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione uma categoria" />
@@ -264,7 +294,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                 <SheetClose asChild>
                     <Button type="button" variant="outline">Cancelar</Button>
                 </SheetClose>
-                <Button type="submit">Salvar Despesa</Button>
+                <Button type="submit" variant="success">Salvar</Button>
             </SheetFooter>
           </form>
         </Form>
