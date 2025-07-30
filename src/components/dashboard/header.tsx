@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -48,7 +49,7 @@ export default function Header() {
             </Link>
             <Link
               href="/dashboard"
-              className="flex items-center gap-4 px-2.5 text-foreground"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
               <Home className="h-5 w-5" />
               Painel
@@ -61,7 +62,7 @@ export default function Header() {
               Relatórios
             </Link>
             <Link
-              href="#"
+              href="/settings"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
               <Settings className="h-5 w-5" />
@@ -93,7 +94,9 @@ export default function Header() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Configurações</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/settings">Configurações</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>Suporte</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
