@@ -12,12 +12,12 @@ import AddExpenseSheet from "@/components/dashboard/add-expense-sheet";
 import { useToast } from "@/hooks/use-toast";
 
 type DashboardPageProps = {
-    expenses: Despesa[];
+    expenses?: Despesa[];
     setExpenses: React.Dispatch<React.SetStateAction<Despesa[]>>;
     categories: Categoria[];
 }
 
-export default function DashboardPage({ expenses, setExpenses, categories }: DashboardPageProps) {
+export default function DashboardPage({ expenses = [], setExpenses, categories }: DashboardPageProps) {
   const { toast } = useToast();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<Despesa | null>(null);
