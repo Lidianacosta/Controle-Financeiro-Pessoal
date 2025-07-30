@@ -67,6 +67,42 @@ export default function DashboardPage() {
     }
   }
 
+  const handleExport = () => {
+    if(!expenses || expenses.length === 0){
+        toast({
+            title: "Nenhuma despesa para exportar",
+            description: "Adicione despesas antes de exportar.",
+            variant: "destructive"
+        })
+        return;
+    }
+    const headers = ["Nome", "Valor", "Descrição", "Data", "Status", "Categoria"];
+    const rows = expenses.map(expense => 
+        [
+            `"${expense.nome.replace(/"/g, '""')}"`,
+            expense.valor,
+            `"${expense.descricao.replace(/"/g, '""')}"`,
+            new Date(expense.data).toLocaleDateString("pt-BR"),
+            expense.status,
+            `"${expense.category?.nome.replace(/"/g, '""') || 'N/A'}"`,
+        ].join(',')
+    );
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "despesas.csv");
+    document.body.appendChild(link); 
+    link.click();
+    document.body.removeChild(link);
+    toast({
+        title: "Exportação Concluída!",
+        description: "Seu arquivo de despesas (despesas.csv) foi baixado.",
+        variant: "success",
+    })
+  }
+
   return (
     <>
       <MonthlySummary expenses={expenses} />
@@ -78,7 +114,7 @@ export default function DashboardPage() {
             <TabsTrigger value="pending" className="text-red-600">Pendentes</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 gap-1">
+            <Button size="sm" variant="outline" className="h-8 gap-1" onClick={handleExport}>
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Exportar
