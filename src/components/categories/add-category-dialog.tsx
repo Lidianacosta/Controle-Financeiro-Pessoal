@@ -140,7 +140,7 @@ export function AddEditCategoryDialog({ isOpen, onOpenChange, onSaveCategory, ca
                   <DialogClose asChild>
                       <Button type="button" variant="outline">Cancelar</Button>
                   </DialogClose>
-                  <Button type="submit">Salvar</Button>
+                  <Button type="submit" variant="success">Salvar</Button>
               </DialogFooter>
             </form>
           </Form>
