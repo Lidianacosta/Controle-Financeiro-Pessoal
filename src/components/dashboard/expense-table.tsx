@@ -55,7 +55,7 @@ export default function ExpenseTable({ expenses }: ExpenseTableProps) {
                   {new Date(expense.data).toLocaleDateString("pt-BR")}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={expense.status === 'Paga' ? 'default' : 'secondary'} >
+                  <Badge variant={expense.status === 'Paga' ? 'default' : 'destructive'} >
                     {expense.status}
                   </Badge>
                 </TableCell>

@@ -39,7 +39,7 @@ export default function DashboardPage() {
           <TabsList>
             <TabsTrigger value="all">Todas</TabsTrigger>
             <TabsTrigger value="paid" className="text-green-600">Pagas</TabsTrigger>
-            <TabsTrigger value="pending" className="text-orange-600">Pendentes</TabsTrigger>
+            <TabsTrigger value="pending" className="text-red-600">Pendentes</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
             <Button size="sm" variant="outline" className="h-8 gap-1">
