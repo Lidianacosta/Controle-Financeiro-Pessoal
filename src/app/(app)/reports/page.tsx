@@ -4,13 +4,13 @@
 import { useContext, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppContext } from '@/context/app-context';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
 
 export default function ReportsPage() {
-    const { expenses, categories } = useContext(AppContext);
+    const { expenses } = useContext(AppContext);
 
     const { chartData, chartConfig } = useMemo(() => {
         const expenseDataByCat = expenses.reduce((acc, expense) => {
@@ -25,9 +25,13 @@ export default function ReportsPage() {
         const chartData = Object.entries(expenseDataByCat).map(([name, value]) => ({
             name,
             value,
-        })).sort((a,b) => b.value - a.value);
+        })).sort((a,b) => a.value - b.value); // Sort for better visualization in bar chart
 
-        const chartConfig: ChartConfig = {};
+        const chartConfig: ChartConfig = {
+             value: {
+                label: "Total Gasto",
+             },
+        };
         chartData.forEach((item, index) => {
             chartConfig[item.name] = {
                 label: item.name,
@@ -51,34 +55,31 @@ export default function ReportsPage() {
                 {expenses.length > 0 ? (
                 <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
                     <ResponsiveContainer width="100%" height={350}>
-                        <PieChart>
-                            <ChartTooltip content={<ChartTooltipContent nameKey="value" hideLabel />} />
-                            <Pie
-                                data={chartData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={120}
-                                labelLine={false}
-                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                                    const RADIAN = Math.PI / 180;
-                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                    return (
-                                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                                            {`${(percent * 100).toFixed(0)}%`}
-                                        </text>
-                                    );
-                                }}
-                            >
-                                {chartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Legend />
-                        </PieChart>
+                        <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
+                           <XAxis type="number" hide />
+                           <YAxis 
+                             dataKey="name" 
+                             type="category" 
+                             tickLine={false} 
+                             axisLine={false} 
+                             tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                             width={100}
+                           />
+                           <Tooltip
+                                cursor={{ fill: 'hsl(var(--muted))' }}
+                                content={
+                                <ChartTooltipContent
+                                    formatter={(value) =>
+                                        new Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                        }).format(value as number)
+                                    }
+                                />
+                                }
+                           />
+                           <Bar dataKey="value" layout="vertical" radius={4} fill="hsl(var(--primary))" />
+                        </BarChart>
                     </ResponsiveContainer>
                 </ChartContainer>
                 ) : (
