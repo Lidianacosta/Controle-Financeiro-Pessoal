@@ -54,7 +54,7 @@ export default function CategoriesPage() {
             toast({
                 title: "Categoria Excluída!",
                 description: `A categoria "${categoryToDelete.nome}" foi excluída com sucesso.`,
-                variant: 'destructive',
+                variant: 'success',
             });
         }
     };

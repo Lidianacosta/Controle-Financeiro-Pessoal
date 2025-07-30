@@ -84,7 +84,7 @@ export function CategoryTable({ categories, onEdit, onDelete }: { categories: Ca
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onDelete(category.id)}>Excluir</AlertDialogAction>
+                    <AlertDialogAction onClick={() => onDelete(category.id)} className="bg-green-600 hover:bg-green-700">Excluir</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
