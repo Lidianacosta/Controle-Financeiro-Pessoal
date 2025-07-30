@@ -27,6 +27,7 @@ export default function CategoriesPage() {
             toast({
                 title: "Categoria Atualizada!",
                 description: `A categoria ${categoryData.nome} foi atualizada com sucesso.`,
+                variant: 'success'
             });
         } else {
             // Adding new category
@@ -38,6 +39,7 @@ export default function CategoriesPage() {
             toast({
                 title: "Categoria Adicionada!",
                 description: `A categoria ${newCategory.nome} foi criada com sucesso.`,
+                variant: 'success'
             });
         }
     }
