@@ -61,7 +61,7 @@ type AddExpenseSheetProps = {
     categories: Categoria[];
 };
 
-export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit, categories }: AddExpenseSheetProps) {
+export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, expenseToEdit, categories = [] }: AddExpenseSheetProps) {
   const { toast } = useToast();
   const [suggestedCategories, setSuggestedCategories] = useState<string[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -304,4 +304,5 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onSaveExpense, e
   );
 }
 
+    
     
