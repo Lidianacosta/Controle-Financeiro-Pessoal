@@ -1,27 +1,30 @@
 export type User = {
   id: string;
-  name: string;
+  nome: string;
   email: string;
-  phoneNumber?: string;
-  birthDate?: Date;
-  fixedIncome: number;
-  extraIncome: number;
-  monthlyGoal: number;
+  cpf: string;
+  numero_de_telefone?: string;
+  data_de_aniversario?: Date;
+  senha?: string;
+  renda_mensal: number;
 };
 
-export type Expense = {
+export type DespesaStatus = 'Paga' | 'A Pagar';
+
+export type Despesa = {
   id: string;
-  name: string;
-  value: number;
-  description: string;
-  date: Date;
-  status: 'pago' | 'a pagar';
-  isFixed: boolean;
-  category?: Category;
+  nome: string;
+  valor: number;
+  descricao: string;
+  data: Date;
+  status: DespesaStatus;
+  isFixed?: boolean;
+  category?: Categoria;
 };
 
-export type Category = {
+export type Categoria = {
   id: string;
-  name: string;
+  nome: string;
+  descricao?: string;
   icon?: string;
 };

@@ -2,25 +2,25 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, CreditCard, Landmark, TrendingUp } from "lucide-react";
-import type { Expense } from "@/lib/types";
+import type { Despesa } from "@/lib/types";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { ChartTooltip, ChartTooltipContent, ChartContainer } from "@/components/ui/chart";
 
 type MonthlySummaryProps = {
-  expenses: Expense[];
+  expenses: Despesa[];
 };
 
 export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
-  const totalExpenses = expenses.reduce((acc, expense) => acc + expense.value, 0);
+  const totalExpenses = expenses.reduce((acc, expense) => acc + expense.valor, 0);
   const fixedIncome = 5000; 
   const balance = fixedIncome - totalExpenses;
 
   const expenseDataByCat = expenses.reduce((acc, expense) => {
-    const categoryName = expense.category?.name || 'Outros';
+    const categoryName = expense.category?.nome || 'Outros';
     if (!acc[categoryName]) {
       acc[categoryName] = 0;
     }
-    acc[categoryName] += expense.value;
+    acc[categoryName] += expense.valor;
     return acc;
   }, {} as Record<string, number>);
 
@@ -68,7 +68,7 @@ export default function MonthlySummary({ expenses }: MonthlySummaryProps) {
           <Landmark className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className={`text-2xl font-bold ${balance < 0 ? 'text-destructive' : 'text-green-600'}`}>
+          <div className={`text-2xl font-bold ${balance < 0 ? 'text-destructive' : 'text-primary'}`}>
             {balance.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",

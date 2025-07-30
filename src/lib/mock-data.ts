@@ -1,21 +1,21 @@
-import type { Expense, Category } from './types';
+import type { Despesa, Categoria } from './types';
 
-export const categories: Category[] = [
-  { id: '1', name: 'Alimentação', icon: 'Utensils' },
-  { id: '2', name: 'Transporte', icon: 'Bus' },
-  { id: '3', name: 'Moradia', icon: 'Home' },
-  { id: '4', name: 'Lazer', icon: 'Film' },
-  { id: '5', name: 'Saúde', icon: 'HeartPulse' },
-  { id: '6', name: 'Educação', icon: 'BookOpen' },
-  { id: '7', name: 'Outros', icon: 'MoreHorizontal' },
+export const categories: Categoria[] = [
+  { id: '1', name: 'Alimentação', icon: 'Utensils', descricao: 'Despesas com comida, restaurantes, etc.' },
+  { id: '2', name: 'Transporte', icon: 'Bus', descricao: 'Despesas com transporte público, combustível, etc.' },
+  { id: '3', name: 'Moradia', icon: 'Home', descricao: 'Aluguel, contas de casa, etc.' },
+  { id: '4', name: 'Lazer', icon: 'Film', descricao: 'Cinema, shows, etc.' },
+  { id: '5', name: 'Saúde', icon: 'HeartPulse', descricao: 'Médicos, remédios, etc.' },
+  { id: '6', name: 'Educação', icon: 'BookOpen', descricao: 'Cursos, livros, etc.' },
+  { id: '7', name: 'Outros', icon: 'MoreHorizontal', descricao: 'Outras despesas não categorizadas.' },
 ];
 
-export const expenses: Expense[] = [
-  { id: '1', name: 'Almoço no restaurante', value: 45.50, description: 'Almoço com amigos no centro da cidade', date: new Date(2024, 6, 1), status: 'pago', isFixed: false, category: categories[0] },
-  { id: '2', name: 'Passagem de ônibus', value: 4.50, description: 'Ida para o trabalho', date: new Date(2024, 6, 1), status: 'pago', isFixed: true, category: categories[1] },
-  { id: '3', name: 'Aluguel', value: 1500, description: 'Aluguel do apartamento', date: new Date(2024, 6, 5), status: 'pago', isFixed: true, category: categories[2] },
-  { id: '4', name: 'Cinema', value: 30, description: 'Ingresso para filme de ação', date: new Date(2024, 6, 10), status: 'pago', isFixed: false, category: categories[3] },
-  { id: '5', name: 'Consulta médica', value: 250, description: 'Consulta de rotina', date: new Date(2024, 6, 15), status: 'a pagar', isFixed: false, category: categories[4] },
-  { id: '6', name: 'Curso de Inglês', value: 350, description: 'Mensalidade do curso', date: new Date(2024, 6, 20), status: 'pago', isFixed: true, category: categories[5] },
-  { id: '7', name: 'Supermercado', value: 450, description: 'Compras do mês', date: new Date(2024, 5, 28), status: 'pago', isFixed: false, category: categories[0] },
+export const expenses: Despesa[] = [
+  { id: '1', nome: 'Almoço no restaurante', valor: 45.50, descricao: 'Almoço com amigos no centro da cidade', data: new Date(2024, 6, 1), status: 'Paga', category: categories[0] },
+  { id: '2', nome: 'Passagem de ônibus', valor: 4.50, descricao: 'Ida para o trabalho', data: new Date(2024, 6, 1), status: 'Paga', category: categories[1] },
+  { id: '3', nome: 'Aluguel', valor: 1500, descricao: 'Aluguel do apartamento', data: new Date(2024, 6, 5), status: 'Paga', category: categories[2] },
+  { id: '4', nome: 'Cinema', valor: 30, descricao: 'Ingresso para filme de ação', data: new Date(2024, 6, 10), status: 'Paga', category: categories[3] },
+  { id: '5', nome: 'Consulta médica', valor: 250, descricao: 'Consulta de rotina', data: new Date(2024, 6, 15), status: 'A Pagar', category: categories[4] },
+  { id: '6', nome: 'Curso de Inglês', valor: 350, descricao: 'Mensalidade do curso', data: new Date(2024, 6, 20), status: 'Paga', category: categories[5] },
+  { id: '7', nome: 'Supermercado', valor: 450, descricao: 'Compras do mês', data: new Date(2024, 5, 28), status: 'Paga', category: categories[0] },
 ];

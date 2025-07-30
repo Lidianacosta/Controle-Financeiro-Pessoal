@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -40,14 +39,14 @@ import { suggestExpenseCategory } from "@/ai/flows/suggest-expense-category";
 import { categories } from "@/lib/mock-data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import type { DespesaStatus } from "@/lib/types";
 
 const expenseSchema = z.object({
-  name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
-  value: z.coerce.number().positive("O valor deve ser positivo."),
-  description: z.string().min(3, "A descrição é muito curta.").max(200, "A descrição é muito longa."),
-  date: z.date({ required_error: "A data é obrigatória." }),
-  status: z.enum(["pago", "a pagar"], { required_error: "Selecione o status." }),
-  isFixed: z.boolean().default(false),
+  nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+  valor: z.coerce.number().positive("O valor deve ser positivo."),
+  descricao: z.string().min(3, "A descrição é muito curta.").max(200, "A descrição é muito longa."),
+  data: z.date({ required_error: "A data é obrigatória." }),
+  status: z.enum(["Paga", "A Pagar"], { required_error: "Selecione o status." }),
   category: z.string({ required_error: "Selecione uma categoria." }),
 });
 
@@ -56,7 +55,7 @@ type ExpenseFormValues = z.infer<typeof expenseSchema>;
 type AddExpenseSheetProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onAddExpense: (expense: ExpenseFormValues) => void;
+    onAddExpense: (expense: Omit<ExpenseFormValues, "category"> & { category: string, status: DespesaStatus }) => void;
 };
 
 export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: AddExpenseSheetProps) {
@@ -66,13 +65,12 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
     defaultValues: {
-      isFixed: false,
-      status: "a pagar",
-      date: new Date(),
+      status: "A Pagar",
+      data: new Date(),
     },
   });
 
-  const description = form.watch("description");
+  const description = form.watch("descricao");
 
   const handleSuggestCategories = async () => {
     if (!description) return;
@@ -119,7 +117,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 overflow-y-auto h-[calc(100vh-120px)] pr-4">
             <FormField
               control={form.control}
-              name="name"
+              name="nome"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
@@ -133,7 +131,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
             
             <FormField
               control={form.control}
-              name="description"
+              name="descricao"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
@@ -174,7 +172,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                       <SelectGroup>
                         <SelectLabel>Todas</SelectLabel>
                         {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+                          <SelectItem key={cat.id} value={cat.nome}>{cat.nome}</SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
@@ -187,7 +185,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
             <div className="grid grid-cols-2 gap-4">
                 <FormField
                 control={form.control}
-                name="value"
+                name="valor"
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Valor (R$)</FormLabel>
@@ -200,7 +198,7 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                 />
                  <FormField
                     control={form.control}
-                    name="date"
+                    name="data"
                     render={({ field }) => (
                         <FormItem className="flex flex-col pt-2">
                         <FormLabel className="mb-2">Data da Despesa</FormLabel>
@@ -234,31 +232,16 @@ export default function AddExpenseSheet({ isOpen, onOpenChange, onAddExpense }: 
                   <FormControl>
                     <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-4" >
                       <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="pago" /></FormControl>
-                        <FormLabel className="font-normal">Pago</FormLabel>
+                        <FormControl><RadioGroupItem value="Paga" /></FormControl>
+                        <FormLabel className="font-normal">Paga</FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="a pagar" /></FormControl>
+                        <FormControl><RadioGroupItem value="A Pagar" /></FormControl>
                         <FormLabel className="font-normal">A Pagar</FormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="isFixed"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>É uma despesa fixa?</FormLabel>
-                  </div>
                 </FormItem>
               )}
             />

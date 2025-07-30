@@ -1,4 +1,4 @@
-import type { Expense } from "@/lib/types";
+import type { Despesa } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 type ExpenseTableProps = {
-  expenses: Expense[];
+  expenses: Despesa[];
 };
 
 export default function ExpenseTable({ expenses }: ExpenseTableProps) {
@@ -49,18 +49,18 @@ export default function ExpenseTable({ expenses }: ExpenseTableProps) {
           <TableBody>
             {expenses.map((expense) => (
               <TableRow key={expense.id}>
-                <TableCell className="font-medium">{expense.name}</TableCell>
-                <TableCell className="hidden md:table-cell">{expense.category?.name || 'N/A'}</TableCell>
+                <TableCell className="font-medium">{expense.nome}</TableCell>
+                <TableCell className="hidden md:table-cell">{expense.category?.nome || 'N/A'}</TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {new Date(expense.date).toLocaleDateString("pt-BR")}
+                  {new Date(expense.data).toLocaleDateString("pt-BR")}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={"outline"} className={expense.status === 'pago' ? 'bg-accent/20 border-transparent text-accent-foreground' : 'text-muted-foreground'}>
-                    {expense.status === 'pago' ? 'Pago' : 'A Pagar'}
+                  <Badge variant={expense.status === 'Paga' ? 'default' : 'secondary'} >
+                    {expense.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  {expense.value.toLocaleString("pt-BR", {
+                  {expense.valor.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })}

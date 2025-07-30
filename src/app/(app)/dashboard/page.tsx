@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Expense } from "@/lib/types";
+import type { Despesa } from "@/lib/types";
 import { expenses as initialExpenses } from "@/lib/mock-data";
 import MonthlySummary from "@/components/dashboard/monthly-summary";
 import ExpenseTable from "@/components/dashboard/expense-table";
@@ -14,11 +14,11 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function DashboardPage() {
   const { toast } = useToast();
-  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
+  const [expenses, setExpenses] = useState<Despesa[]>(initialExpenses);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const handleAddExpense = (expense: Omit<Expense, "id" | "category" | "date"> & { category: string, date: Date }) => {
-    const newExpense: Expense = {
+  const handleAddExpense = (expense: Omit<Despesa, "id" | "category" | "date"> & { category: string, date: Date }) => {
+    const newExpense: Despesa = {
       ...expense,
       id: `exp-${Date.now()}`,
       category: categories.find(c => c.name === expense.category),
@@ -27,7 +27,7 @@ export default function DashboardPage() {
     setExpenses(prev => [newExpense, ...prev]);
     toast({
       title: "Despesa Adicionada!",
-      description: `${expense.name} foi adicionada com sucesso.`,
+      description: `${expense.nome} foi adicionada com sucesso.`,
     })
   };
 
@@ -60,10 +60,10 @@ export default function DashboardPage() {
           <ExpenseTable expenses={expenses} />
         </TabsContent>
         <TabsContent value="paid">
-          <ExpenseTable expenses={expenses.filter(e => e.status === 'pago')} />
+          <ExpenseTable expenses={expenses.filter(e => e.status === 'Paga')} />
         </TabsContent>
         <TabsContent value="pending">
-          <ExpenseTable expenses={expenses.filter(e => e.status === 'a pagar')} />
+          <ExpenseTable expenses={expenses.filter(e => e.status === 'A Pagar')} />
         </TabsContent>
       </Tabs>
       <AddExpenseSheet 

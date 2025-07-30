@@ -32,14 +32,13 @@ import { useRouter } from "next/navigation";
 
 
 const signupSchema = z.object({
-    name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+    nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
     email: z.string().email("Email inválido."),
-    phoneNumber: z.string().optional(),
-    birthDate: z.date().optional(),
-    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
-    fixedIncome: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
-    extraIncome: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
-    monthlyGoal: z.coerce.number().min(0, "Meta deve ser um valor positivo."),
+    cpf: z.string().min(11, "CPF deve ter 11 caracteres.").max(11, "CPF deve ter 11 caracteres."),
+    numero_de_telefone: z.string().optional(),
+    data_de_aniversario: z.date().optional(),
+    senha: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
+    renda_mensal: z.coerce.number().min(0, "Renda deve ser um valor positivo."),
 });
 
 export default function SignupPage() {
@@ -47,11 +46,10 @@ export default function SignupPage() {
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      nome: "",
       email: "",
-      fixedIncome: 0,
-      extraIncome: 0,
-      monthlyGoal: 0,
+      cpf: "",
+      renda_mensal: 0,
     },
   });
 
@@ -78,7 +76,7 @@ export default function SignupPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="nome"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Nome Completo</FormLabel>
@@ -107,7 +105,20 @@ export default function SignupPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <FormField
                   control={form.control}
-                  name="phoneNumber"
+                  name="cpf"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>CPF</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Seu CPF" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="numero_de_telefone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Telefone (Opcional)</FormLabel>
@@ -118,9 +129,12 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
-                 <FormField
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
                     control={form.control}
-                    name="birthDate"
+                    name="data_de_aniversario"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
                         <FormLabel>Data de Nascimento (Opcional)</FormLabel>
@@ -159,11 +173,9 @@ export default function SignupPage() {
                         </FormItem>
                     )}
                     />
-              </div>
-
-               <FormField
+                <FormField
                   control={form.control}
-                  name="password"
+                  name="senha"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
@@ -174,48 +186,21 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                    control={form.control}
-                    name="fixedIncome"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Renda Fixa Mensal</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="R$" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="extraIncome"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Renda Extra Média</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="R$" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="monthlyGoal"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Meta de Economia</FormLabel>
-                        <FormControl>
-                            <Input type="number" placeholder="R$" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
+                <FormField
+                control={form.control}
+                name="renda_mensal"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Renda Mensal</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="R$" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
               
               <Button type="submit" className="w-full">
                 Criar Conta
