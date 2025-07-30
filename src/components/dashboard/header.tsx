@@ -9,6 +9,7 @@ import {
   Menu,
   Search,
   Settings,
+  Tags,
   Wallet,
 } from "lucide-react";
 
@@ -53,6 +54,13 @@ export default function Header() {
             >
               <Home className="h-5 w-5" />
               Painel
+            </Link>
+             <Link
+              href="/categories"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Tags className="h-5 w-5" />
+              Categorias
             </Link>
             <Link
               href="#"

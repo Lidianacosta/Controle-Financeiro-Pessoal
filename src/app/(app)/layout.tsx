@@ -8,6 +8,7 @@ import {
   LineChart,
   Settings,
   Wallet,
+  Tags,
 } from "lucide-react";
 
 import {
@@ -42,6 +43,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">Painel</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/categories"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Tags className="h-5 w-5" />
+                  <span className="sr-only">Categorias</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Categorias</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
