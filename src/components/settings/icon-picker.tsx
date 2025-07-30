@@ -10,8 +10,6 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import * as Lucide from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const iconList = Object.keys(Lucide).filter(key => typeof Lucide[key as keyof typeof Lucide] === 'object' && key !== 'createLucideIcon' && key !== 'icons');
-
 // A more robust Icon component that handles potential missing icons gracefully.
 const Icon = ({ name, ...props }: { name?: string; [key: string]: any }) => {
     // Check if the name is a valid key in the Lucide object and it's a component
@@ -22,7 +20,7 @@ const Icon = ({ name, ...props }: { name?: string; [key: string]: any }) => {
 };
 
 
-export const IconPicker = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+export const IconPicker = ({ value, onChange, iconList }: { value: string; onChange: (value: string) => void; iconList: string[] }) => {
   const [open, setOpen] = useState(false);
 
   return (
