@@ -15,13 +15,14 @@ Esta é uma aplicação de controle financeiro pessoal desenvolvida para ajudar 
 
 O desenvolvimento desta aplicação foi guiado pelos seguintes diagramas, que foram fundamentais para a estruturação do código e das funcionalidades.
 
-### Diagrama de Caso de Uso
-
-![Diagrama de Caso de Uso](https://placehold.co/800x500.png?text=Insira+seu+Diagrama+de+Caso+de+Uso+aqui)
-
 ### Diagrama de Classes
 
-![Diagrama de Classes](https://placehold.co/800x500.png?text=Insira+seu+Diagrama+de+Classes+aqui)
+![Diagrama de Classes](docs/diagrams/Diagrama_de_classes.png)
+
+### Diagrama de Classes BCE
+
+![Diagrama de Classes BCE](docs/diagrams/Diagrama_de_classes_bce.png)
+
 
 ---
 
