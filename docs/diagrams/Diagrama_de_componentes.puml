@@ -1,0 +1,34 @@
+@startuml
+title Diagrama de Componentes - Controle Financeiro Pessoal (com Camadas Lógicas)
+
+package "Aplicação Web (Next.js)" {
+
+  package "Frontend (UI)" {
+    [Interface do Usuário (Componentes React)]
+  }
+
+  package "Lógica da Aplicação (Client-Side)" {
+    [Gerenciador de Autenticação]
+    [Gerenciador de Despesas]
+    [Gerenciador de Categorias]
+    [Relatórios e Gráficos]
+    [Módulo de IA (Genkit)] as GenkitAI
+  }
+
+  database "Local Storage" as DB
+}
+
+' Interações da Interface com a Lógica
+[Interface do Usuário (Componentes React)] --> [Gerenciador de Autenticação]
+[Interface do Usuário (Componentes React)] --> [Gerenciador de Despesas]
+[Interface do Usuário (Componentes React)] --> [Gerenciador de Categorias]
+[Interface do Usuário (Componentes React)] --> [Relatórios e Gráficos]
+
+' Interações da Lógica com os Dados e IA
+[Gerenciador de Autenticação] --> DB
+[Gerenciador de Despesas] --> DB
+[Gerenciador de Categorias] --> DB
+[Relatórios e Gráficos] --> DB
+[Gerenciador de Despesas] --> GenkitAI : Solicita sugestão
+
+@enduml
